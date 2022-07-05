@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.*;
 
-public class BarangViewFrame extends JFrame {
+public class PembelianViewFrame extends JFrame{
     private JPanel mainPanel;
     private JTextField cariTextField;
     private JButton cariButton;
@@ -21,9 +21,9 @@ public class BarangViewFrame extends JFrame {
     private JButton cetakButton;
     private JButton tutupButton;
 
-    public BarangViewFrame() {
+    public PembelianViewFrame() {
         tambahButton.addActionListener(e -> {
-            BarangInputFrame inputFrame = new BarangInputFrame();
+            PembelianInputFrame inputFrame = new PembelianInputFrame();
             inputFrame.setVisible(true);
         });
         ubahButton.addActionListener(e -> {
@@ -39,7 +39,7 @@ public class BarangViewFrame extends JFrame {
 
             TableModel tm = viewTable.getModel();
             int id_barang = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
-            BarangInputFrame inputFrame = new BarangInputFrame();
+            PembelianInputFrame inputFrame = new PembelianInputFrame();
             inputFrame.setId_barang(id_barang);
             inputFrame.isiKomponen();
             inputFrame.setVisible(true);
@@ -68,7 +68,7 @@ public class BarangViewFrame extends JFrame {
                 int id_barang = Integer.parseInt(tm.getValueAt(barisTerpilih, 0).toString());
 
                 Connection c = Koneksi.getConnection();
-                String deleteSQL = "DELETE FROM barang WHERE id_barang = ?";
+                String deleteSQL = "DELETE FROM pembelian WHERE id_barang = ?";
 
                 try {
                     PreparedStatement ps = c.prepareStatement(deleteSQL);
@@ -89,14 +89,14 @@ public class BarangViewFrame extends JFrame {
                 return;
             }
             String keyword = "%" + cariTextField.getText() + "%";
-            String searchSQL = "SELECT * FROM barang WHERE id_barang like ?";
+            String searchSQL = "SELECT * FROM pembelian WHERE id_barang like ?";
             Connection c = Koneksi.getConnection();
             try {
                 PreparedStatement ps = c.prepareStatement(searchSQL);
                 ps.setString(1, keyword);
                 ResultSet rs = ps.executeQuery();
 
-                String[] header = {"Id_Barang", "Merk", "Tipe", "Berat", "Harga", "Stok"};
+                String[] header = {"Id_Barang", "Nama Pembeli", "Alamat", "No. Telepon"};
                 DefaultTableModel dtm = new DefaultTableModel(header, 0);
                 viewTable.getColumnModel().getColumn(0).setWidth(100);
                 viewTable.getColumnModel().getColumn(0).setMaxWidth(100);
@@ -106,11 +106,9 @@ public class BarangViewFrame extends JFrame {
                 Object[] row = new Object[2];
                 while (rs.next()) {
                     row[0] = rs.getInt("id_barang");
-                    row[1] = rs.getString("merk");
-                    row[2] = rs.getString("tipe");
-                    row[3] = rs.getString("berat");
-                    row[4] = rs.getInt("harga");
-                    row[5] = rs.getInt("stok");
+                    row[1] = rs.getString("nama_pembeli");
+                    row[2] = rs.getString("alamat");
+                    row[3] = rs.getString("no_telp");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -132,21 +130,21 @@ public class BarangViewFrame extends JFrame {
 
     public void init() {
         setContentPane(mainPanel);
-        setTitle("Data Barang");
+        setTitle("Data Pembelian");
         pack();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
     }
 
     public void isiTable() {
-        String selectSQL = "SELECT * FROM barang";
+        String selectSQL = "SELECT * FROM pembelian";
         Connection c = Koneksi.getConnection();
 
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
 
-            String[] header = {"Id Barang", "Merk", "Tipe", "Berat", "Harga", "Stok"};
+            String[] header = {"Id Barang", "Nama Pembeli", "Alamat", "No. Telepon"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
@@ -158,11 +156,9 @@ public class BarangViewFrame extends JFrame {
             Object[] row = new Object[2];
             while (rs.next()) {
                 row[0] = rs.getInt("id_barang");
-                row[1] = rs.getString("merk");
-                row[2] = rs.getString("tipe");
-                row[3] = rs.getString("berat");
-                row[4] = rs.getInt("harga");
-                row[5] = rs.getInt("stok");
+                row[1] = rs.getString("nama_pembeli");
+                row[2] = rs.getString("alamat");
+                row[3] = rs.getString("no_telp");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
@@ -170,3 +166,4 @@ public class BarangViewFrame extends JFrame {
         }
     }
 }
+
